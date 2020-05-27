@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-buster
+FROM php:7.3-fpm-stretch
 
 RUN apt-get update && apt-get install nano htop git wget build-essential apt-transport-https ca-certificates apt-utils dirmngr -y
 
@@ -21,14 +21,14 @@ RUN apt-get update -y && apt-get install -y \
 	nano \
 	git \
 	curl \
+	libcurl3 \
 	zlib1g-dev libicu-dev g++ \
     libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev libfreetype6-dev \
-    libonig-dev \
 	&& mkdir -p /usr/local/etc/php/conf.d/
 RUN pecl install imagick \
 	&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
 	&& docker-php-ext-install imap \
-	&& docker-php-ext-configure gd \
+	&& docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
 	&& docker-php-ext-install gd \
 	&& docker-php-ext-install shmop \
 	&& docker-php-ext-install pdo \
@@ -55,9 +55,10 @@ RUN pecl install imagick \
 	&& docker-php-ext-install xsl \
 	&& docker-php-ext-install zip \
 	&& docker-php-ext-install bcmath \
-	&& docker-php-ext-enable imagick
-
+	&& docker-php-ext-enable imagick \
+	&& cp /usr/lib/x86_64-linux-gnu/libcurl.so.3 /usr/lib/
 RUN apt-get install libcurl4-gnutls-dev -y
+ENV env LD_PRELOAD=/usr/lib/libcurl.so.3
 RUN docker-php-ext-install curl
 
 RUN apt-get install -y libmemcached-dev zlib1g-dev \
@@ -88,3 +89,4 @@ RUN chmod +x /opt/scripts/startup.sh
 RUN apt-get install git -y && cd /tmp/ && git clone -n https://github.com/crypt1d/redi.sh.git --depth 1 /tmp/redish && cd /tmp/redish && git checkout HEAD redi.sh && cp redi.sh /usr/bin && chmod +x /usr/bin/redi.sh
 
 ENV DB_ENV_MYSQL_ROOT_PASSWORD [blank]
+
