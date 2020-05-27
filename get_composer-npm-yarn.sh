@@ -24,5 +24,5 @@ apt-get update
 apt-get install -y nodejs yarn
 
 rm -r /var/lib/apt/lists/*
- 
-docker-php-ext-enable bcmath apcu bz2 curl dom exif gd gettext gnupg iconv imagick imap intl json mbstring memcached mysqli pdo pdo_mysql phar pspell session shmop simplexml soap sockets timezonedb xsl zip
+
+docker-php-ext-enable apcu bz2 curl dom exif gd gettext gnupg iconv imagick imap intl json mbstring memcached mysqli opcache pdo pdo_mysql pspell session shmop simplexml soap sockets timezonedb xsl zip mysql
